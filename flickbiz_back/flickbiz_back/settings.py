@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "apps.media.apps.MediaConfig",
     "apps.reviews.apps.ReviewsConfig",
     "apps.notifications.apps.NotificationsConfig",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
