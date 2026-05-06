@@ -1,0 +1,21 @@
+from django.urls import path
+from .views import (
+    GenreListView, TagListView,
+    MovieListView, MovieDetailView,
+    SeriesListView, SeriesDetailView,
+    UserMediaStatusView, FavoriteView,
+    WeeklyTrendView, DiscoverView
+)
+
+urlpatterns = [
+    path("genres/", GenreListView.as_view(), name="genre_list"),
+    path("tags/", TagListView.as_view(), name="tag_list"),
+    path("movies/", MovieListView.as_view(), name="movie_list"),
+    path("movies/<int:pk>/", MovieDetailView.as_view(), name="movie_detail"),
+    path("series/", SeriesListView.as_view(), name="series_list"),
+    path("series/<int:pk>/", SeriesDetailView.as_view(), name="series_detail"),
+    path("status/", UserMediaStatusView.as_view(), name="media_status"),
+    path("favorites/", FavoriteView.as_view(), name="favorites"),
+    path("trending/", WeeklyTrendView.as_view(), name="weekly_trends"),
+    path("discover/", DiscoverView.as_view(), name="discover"),
+]
