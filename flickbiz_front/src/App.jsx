@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
+import AppLayout from "./components/layout/AppLayout";
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
@@ -18,12 +19,10 @@ function PrivateRoute({ children }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={
-        <PublicRoute><LandingPage /></PublicRoute>
-      } />
-      <Route path="/dashboard" element={
-        <PrivateRoute><DashboardPage /></PrivateRoute>
-      } />
+      <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
+      <Route element={<PrivateRoute><AppLayout /></PrivateRoute>}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
     </Routes>
   );
 }
