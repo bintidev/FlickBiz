@@ -9,6 +9,7 @@ import AppLayout from "./components/layout/AppLayout";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import SeriesDetailPage from "./pages/SeriesDetailPage";
 import ReviewsPage from "./pages/ReviewsPage";
+import NotificationsPage from "./pages/NotificationsPage";
 import ProfilePage from "./pages/ProfilePage";
 import DiscoverPage from "./pages/DiscoverPage";
 
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/movies/:id" element={<MovieDetailPage />} />
           <Route path="/series/:id" element={<SeriesDetailPage />} />
           <Route path="/reviews" element={<ReviewsPage />} />
+          {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/discover" element={<DiscoverPage />} />
         </Route>

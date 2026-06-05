@@ -118,15 +118,17 @@ export default function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           {/* Notifications */}
-          <Link to="/notifications">
-            <motion.div whileHover={{ scale: 1.1, color: "#ff3f6c" }}
-              className="relative w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "rgba(255,255,255,0.04)", color: "#8888aa", cursor: "none" }}>
-              <FiBell size={17} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
-                style={{ background: "#ff3f6c", boxShadow: "0 0 6px #ff3f6c" }} />
-            </motion.div>
-          </Link>
+          {false && (
+            <Link to="/notifications">
+              <motion.div whileHover={{ scale: 1.1, color: "#ff3f6c" }}
+                className="relative w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: "rgba(255,255,255,0.04)", color: "#8888aa", cursor: "none" }}>
+                <FiBell size={17} />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
+                  style={{ background: "#ff3f6c", boxShadow: "0 0 6px #ff3f6c" }} />
+              </motion.div>
+            </Link>
+          )}
 
           {/* Profile dropdown — always visible */}
           <div className="relative">
