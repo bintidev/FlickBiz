@@ -255,8 +255,12 @@ export default function ReviewsPage() {
           -webkit-text-stroke: 1px rgba(255,255,255,0.15);
           color: transparent;
         }
+        /* Barra de scroll estilizada */
         .dashboard-scroll::-webkit-scrollbar { width: 4px; }
-        .dashboard-scroll::-webkit-scrollbar-thumb { background: rgba(255, 63, 108, 0.2); border-radius: 10px; }
+        .dashboard-scroll::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
+        .dashboard-scroll::-webkit-scrollbar-thumb { background: rgba(255, 63, 108, 0.4); border-radius: 10px; }
+        .dashboard-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 63, 108, 0.7); }
+
         .thermal-select-premium {
           appearance: none;
           background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ff8c42' stroke-width='3'><polyline points='6 9 12 15 18 9'></polyline></svg>");
@@ -349,11 +353,11 @@ export default function ReviewsPage() {
         {/* RESPONSIVE LAYOUT */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* CINEMATIC FEED LIST */}
-          <div className="lg:col-span-4 flex flex-col gap-4 overflow-y-auto dashboard-scroll max-h-[80vh]">
+          {/* CINEMATIC FEED LIST - Arreglado Scroll y Compresión */}
+          <div className="lg:col-span-4 flex flex-col gap-4 overflow-y-auto dashboard-scroll h-[70vh] lg:h-[80vh] pr-2">
             <AnimatePresence mode="popLayout">
               {loading ? (
-                [1,2,3].map(i => <div key={i} className="h-32 awwwards-blur-card rounded-2xl animate-pulse" />)
+                [1,2,3,4].map(i => <div key={i} className="h-32 shrink-0 awwwards-blur-card rounded-2xl animate-pulse" />)
               ) : (
                 reviews.map((rev) => {
                   const isSel = selectedReviewId === rev.id;
@@ -363,19 +367,12 @@ export default function ReviewsPage() {
                       variants={ITEM_VARIANTS} 
                       initial="hidden" 
                       animate="visible" 
-                      layout // Smooth layout resizing transitions
-                      transition={{
-                        type: "spring",
-                        stiffness: 220,
-                        damping: 26,
-                        layout: { duration: 0.4 }
-                      }}
+                      layout
                       onClick={() => handleCardClick(rev.id)}
-                      className={`p-4 rounded-2xl cursor-pointer border relative overflow-hidden group transition-colors duration-300 ${
+                      className={`p-4 rounded-2xl cursor-pointer border relative overflow-hidden group transition-all duration-300 shrink-0 ${
                         isSel ? "bg-[#ff3f6c]/5 border-[#ff3f6c]/40 shadow-xl" : "awwwards-blur-card border-zinc-800/80 hover:border-zinc-700"
                       }`}
                     >
-                      {/* layout="position" prevents text/image warping during container expansion */}
                       <motion.div layout="position" className="flex gap-4">
                         {rev.media_poster && (
                           <div className="w-16 h-24 sm:w-20 sm:h-28 shrink-0 rounded-lg overflow-hidden border border-white/5 shadow-2xl">
@@ -390,11 +387,12 @@ export default function ReviewsPage() {
                             </div>
                             <p className="text-[10px] font-mono text-[#ff8c42] uppercase mb-2 truncate">{rev.media_title}</p>
                             
+                            {/* Ajuste de lectura en móvil: Si está seleccionado, muestra todo el texto */}
                             <motion.p 
                               layout="position"
                               className={`lg:hidden text-xs text-zinc-400 leading-relaxed mb-3 ${isSel ? "" : "line-clamp-2"}`}
                             >
-                              {rev.preview || rev.body || rev.content}
+                              {rev.body || rev.content || rev.preview}
                             </motion.p>
                           </div>
 
@@ -416,17 +414,18 @@ export default function ReviewsPage() {
                         </div>
                       </motion.div>
 
-                      {/* Smooth unmount animation for the mobile details drawer */}
+                      {/* Expansión de detalles en móvil */}
                       <AnimatePresence>
                         {isSel && (
                           <motion.div 
                             initial={{ opacity: 0, height: 0 }} 
                             animate={{ opacity: 1, height: "auto" }} 
                             exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className="lg:hidden mt-4 pt-4 border-t border-zinc-900/60 text-[11px] font-mono text-zinc-500 space-y-1"
+                            transition={{ duration: 0.3 }}
+                            className="lg:hidden mt-4 pt-4 border-t border-zinc-900/60 text-[11px] font-mono text-zinc-500 space-y-2"
                           >
-                            <p>PUBLISHED ON: {new Date(rev.published_at).toLocaleDateString()}</p>
+                            <p>DATE_STAMP: {new Date(rev.published_at).toLocaleString()}</p>
+                            <p className="text-[#ff8c42]">// END_OF_LOG</p>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -440,7 +439,7 @@ export default function ReviewsPage() {
           </div>
 
           {/* DESKTOP DETAIL MODULE */}
-          <div className="hidden lg:flex lg:col-span-8 awwwards-blur-card rounded-3xl p-8 flex-col sticky top-24 h-[75vh] overflow-y-auto dashboard-scroll">
+          <div className="hidden lg:flex lg:col-span-8 awwwards-blur-card rounded-3xl p-8 flex-col sticky top-24 h-[80vh] overflow-y-auto dashboard-scroll">
             <AnimatePresence mode="wait">
               {selectedReview ? (
                 <motion.div key={selectedReview.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="h-full flex flex-col justify-between">
@@ -458,7 +457,7 @@ export default function ReviewsPage() {
                     </div>
                     <div className="bg-zinc-950/20 p-6 rounded-2xl border border-zinc-900/40">
                       <p className="text-[#ff3f6c] mb-4 font-mono text-[10px] tracking-widest uppercase flex items-center gap-2"><FiCornerDownRight /> Critique Stream</p>
-                      <p className="text-zinc-300 leading-relaxed whitespace-pre-line text-sm">{selectedReview.preview || selectedReview.body || selectedReview.content}</p>
+                      <p className="text-zinc-300 leading-relaxed whitespace-pre-line text-sm">{selectedReview.body || selectedReview.content || selectedReview.preview}</p>
                     </div>
                   </div>
 
