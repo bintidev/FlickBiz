@@ -10,6 +10,7 @@ import MovieDetailPage from "./pages/MovieDetailPage";
 import SeriesDetailPage from "./pages/SeriesDetailPage";
 import ReviewsPage from "./pages/ReviewsPage";
 import ProfilePage from "./pages/ProfilePage";
+import DiscoverPage from "./pages/DiscoverPage";
 
 // Creamos una instancia de QueryClient con estrategias de sincronización activa
 const queryClient = new QueryClient({
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/series/:id" element={<SeriesDetailPage />} />
           <Route path="/reviews" element={<ReviewsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/discover" element={<DiscoverPage />} />
         </Route>
       </Routes>
     </QueryClientProvider>
