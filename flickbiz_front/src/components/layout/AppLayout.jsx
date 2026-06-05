@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
-import Navbar from "./Navbar";
+import Navbar from "./NavBar";
 
 function CustomCursor() {
   const cx = useMotionValue(-200), cy = useMotionValue(-200);
