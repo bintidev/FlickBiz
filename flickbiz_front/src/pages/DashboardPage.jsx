@@ -61,6 +61,8 @@ function MediaCard({item,type="movie",isFavorite=false,currentStatus=null,onUpda
   const sry=useSpring(ry,{stiffness:200,damping:20});
   const glowX=useTransform(sry,[-12,12],["0%","100%"]);
   const glowY=useTransform(srx,[12,-12],["0%","100%"]);
+  const title = item.title || item.name || "Sin título";
+const poster = item.poster || item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : item.poster;
 
   const onMove=(e)=>{
     const r=cardRef.current?.getBoundingClientRect();
@@ -340,9 +342,12 @@ export default function DashboardPage(){
     setSpinning(true);
     try {
       const r = await getDiscover();
-      setDiscover(r.data);
+      // Aquí es donde suele estar el error. 
+      // Si la API devuelve un objeto con resultados, tomamos el primero.
+      const data = r.data.results ? r.data.results[0] : r.data;
+      setDiscover(data);
     } catch (e) {
-      console.error(e);
+      console.error("Error en discover:", e);
     } finally {
       setTimeout(() => setSpinning(false), 600);
     }
@@ -537,29 +542,55 @@ export default function DashboardPage(){
         )}
       </Sec>
 
-      {/* ══ SECCIÓN: DISCOVER ══ */}
+      {/* ══ SECCIÓN: DISCOVER (CORREGIDA) ══ */}
       <Sec color="#f472b6" transition="zoomIn">
-        {(inView)=>(
-          <div className="px-8 w-full">
-            <SecHeader icon={FiShuffle} title="Picked" accent="for you" subtitle="Based on your taste — refresh for a new pick"
-              color="#f472b6" inView={inView}
+        {(inView) => (
+          <div className="w-full">
+            <SecHeader 
+              icon={FiShuffle} 
+              title="Picked" 
+              accent="for you" 
+              subtitle="Based on your taste — refresh for a new pick"
+              color="#f472b6" 
+              inView={inView}
               extra={
-                <motion.button whileHover={{scale:1.15,boxShadow:"0 0 28px rgba(244,114,182,.5)"}}
-                  whileTap={{scale:.88}} animate={{rotate:spinning?360:0}} transition={{duration:.6}}
-                  onClick={fetchDiscover} data-cursor
+                <motion.button 
+                  whileHover={{ scale: 1.15, boxShadow: "0 0 28px rgba(244,114,182,.5)" }}
+                  whileTap={{ scale: .88 }} 
+                  animate={{ rotate: spinning ? 360 : 0 }} 
+                  transition={{ duration: 0.6 }}
+                  onClick={fetchDiscover} 
+                  data-cursor
                   className="w-11 h-11 rounded-2xl flex items-center justify-center mr-8"
-                  style={{background:"rgba(244,114,182,.12)",color:"#f472b6",cursor:"none",border:"1px solid rgba(244,114,182,.3)"}}>
-                  <FiRefreshCw size={16}/>
+                  style={{ background: "rgba(244,114,182,.12)", color: "#f472b6", cursor: "none", border: "1px solid rgba(244,114,182,.3)" }}>
+                  <FiRefreshCw size={16} />
                 </motion.button>
-              }/>
+              }
+            />
+            
             <div className="flex justify-center w-full px-8">
               <AnimatePresence mode="wait">
-                {loading||!discover
-                  ?<Skel aspect="2/3"/>
-                  : <div className="w-full max-w-[240px]">
-                      <MediaCard item={discover} type={discover.release_date?"movie":"series"}/>
-                    </div>
-                }
+                {loading || !discover ? (
+                  <motion.div 
+                    key="skeleton"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    className="w-full max-w-[280px]">
+                    <Skel aspect="2/3" />
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key={discover.id}
+                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="w-full max-w-[280px]">
+                    <MediaCard 
+                      item={discover} 
+                      type={discover.release_date ? "movie" : "series"} 
+                    />
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
           </div>

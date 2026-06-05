@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Degradado principal de la landing page -->
+    <linearGradient id="flickGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff3f6c" />
+      <stop offset="100%" stop-color="#ff8c42" />
+    </linearGradient>
+    
+    <!-- Sombra sutil para dar profundidad estilo "Vault" -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Fondo oscuro con textura radial sutil para contraste -->
+  <rect width="100%" height="100%" fill="#0d0b18" rx="40" />
+  
+  <g transform="translate(20, 10)">
+    <!-- Brillo de fondo (Glow) -->
+    <path d="M150,120 L320,120 L290,190 L220,190 L200,240 L280,240 L250,310 L180,310 L140,410 L70,410 Z" 
+          fill="url(#flickGradient)" opacity="0.15" filter="url(#neonGlow)" />
+
+    <!-- Estructura del isotipo: Una 'F' estilizada como cortes de cinta cinematográfica -->
+    <!-- Barra Superior -->
+    <path d="M150,120 L320,120 L290,190 L130,190 Z" fill="url(#flickGradient)" />
+    
+    <!-- Barra Central -->
+    <path d="M210,240 L290,240 L265,300 L185,300 Z" fill="url(#flickGradient)" />
+    
+    <!-- Poste Vertical / Base de la F -->
+    <path d="M120,210 L190,210 L135,350 L65,350 Z" fill="url(#flickGradient)" opacity="0.85" />
+    <path d="M135,350 L65,350 L40,410 L110,410 Z" fill="url(#flickGradient)" opacity="0.7" />
+
+    <!-- Detalles de diseño: Perforaciones de película (Film Strips) en los bordes -->
+    <rect x="165" y="140" width="15" height="20" rx="3" fill="#0d0b18" transform="skewX(-23)" />
+    <rect x="215" y="140" width="15" height="20" rx="3" fill="#0d0b18" transform="skewX(-23)" />
+    <rect x="265" y="140" width="15" height="20" rx="3" fill="#0d0b18" transform="skewX(-23)" />
+    
+    <rect x="215" y="255" width="12" height="16" rx="2" fill="#0d0b18" transform="skewX(-23)" />
+    <rect x="250" y="255" width="12" height="16" rx="2" fill="#0d0b18" transform="skewX(-23)" />
+
+    <!-- Destello ciberpunk (Corte diagonal geométrico) -->
+    <circle cx="330" cy="100" r="6" fill="#ffffff" />
+    <path d="M315,100 L345,100 M330,85 L330,115" stroke="#ffffff" stroke-width="2" opacity="0.7" />
+  </g>
+</svg>
