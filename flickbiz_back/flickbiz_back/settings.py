@@ -7,9 +7,9 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
-DEBUG = os.getenv("DEBUG", "True") == "True"
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-key")
+DEBUG = os.environ.get("DEBUG", "True") == "True"
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -32,6 +32,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -66,8 +68,9 @@ WSGI_APPLICATION = "flickbiz_back.wsgi.application"
 # Database: SQLite for dev, PostgreSQL for production via DATABASE_URL
 DATABASES = {
     "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR}/db.sqlite3",
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
+        ssl_require=not DEBUG,
     )
 }
 
@@ -85,7 +88,7 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "/static/"
+STATIC_URL  = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
@@ -119,7 +122,12 @@ REST_FRAMEWORK = {
 }
 
 # CORS: allow frontend origin
-CORS_ALLOWED_ORIGINS = os.getenv("FRONTEND_URL", "http://localhost:3000").split(",")
+CORS_ALLOWED_ORIGINS = [
+    o for o in [
+        os.environ.get("FRONTEND_URL", "http://localhost:5173"),
+        "http://localhost:5173",
+    ] if o
+]
 CORS_ALLOW_CREDENTIALS = True
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY", "")
