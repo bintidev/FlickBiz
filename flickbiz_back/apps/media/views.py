@@ -26,6 +26,7 @@ import traceback
 @csrf_exempt
 @require_GET  
 def run_fetch(request):
+    from apps.media.models import Movie
     secret = request.GET.get("key", "")
     if secret != os.environ.get("FETCH_SECRET", ""):
         return JsonResponse({"error": "unauthorized"}, status=401)
