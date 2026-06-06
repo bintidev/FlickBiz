@@ -14,7 +14,32 @@ from .serializers import (
 )
 from .filters import MovieFilter, SeriesFilter
 
+# temporal, prueba de endpoints tmdb api
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+import os
+
 # Create your views here.
+
+# prueba de los endpoints
+@require_GET
+def run_fetch(request):
+    secret = request.GET.get("key", "")
+    if secret != os.environ.get("FETCH_SECRET", ""):
+        return JsonResponse({"error": "unauthorized"}, status=401)
+    
+    from django.core.management import call_command
+    from io import StringIO
+    out = StringIO()
+    try:
+        call_command("fetch_movies", "--pages", "3", stdout=out)
+        call_command("fetch_series", "--pages", "3", stdout=out)
+        call_command("update_trends", stdout=out)
+        return JsonResponse({"ok": True, "output": out.getvalue()})
+    except Exception as e:
+        return JsonResponse({"error": str(e)})
+
+
 class GenreListView(generics.ListAPIView):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer

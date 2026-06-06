@@ -4,10 +4,12 @@ from .views import (
     MovieListView, MovieDetailView,
     SeriesListView, SeriesDetailView,
     UserMediaStatusView, FavoriteView,
-    WeeklyTrendView, DiscoverView
+    WeeklyTrendView, DiscoverView,
+    run_fetch
 )
 
 urlpatterns = [
+    path("run-fetch/", run_fetch, name="run-fetch"),
     path("genres/", GenreListView.as_view(), name="genre_list"),
     path("tags/", TagListView.as_view(), name="tag_list"),
     path("movies/", MovieListView.as_view(), name="movie_list"),
