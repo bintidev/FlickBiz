@@ -17,27 +17,66 @@ from .filters import MovieFilter, SeriesFilter
 # temporal, prueba de endpoints tmdb api
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
+from django.views.decorators.csrf import csrf_exempt
 import os
+import traceback
 
 # Create your views here.
 
-# prueba de los endpoints
-@require_GET
+@csrf_exempt
+@require_GET  
 def run_fetch(request):
     secret = request.GET.get("key", "")
     if secret != os.environ.get("FETCH_SECRET", ""):
         return JsonResponse({"error": "unauthorized"}, status=401)
     
-    from django.core.management import call_command
-    from io import StringIO
-    out = StringIO()
+    results = {}
+    
+    # Test 1 — verifica DB
     try:
-        call_command("fetch_movies", "--pages", "3", stdout=out)
-        call_command("fetch_series", "--pages", "3", stdout=out)
-        call_command("update_trends", stdout=out)
-        return JsonResponse({"ok": True, "output": out.getvalue()})
+        from apps.media.models import Movie, Series
+        results["movies_before"] = Movie.objects.count()
+        results["series_before"] = Series.objects.count()
     except Exception as e:
-        return JsonResponse({"error": str(e)})
+        return JsonResponse({"error": "DB error", "detail": str(e), "trace": traceback.format_exc()})
+    
+    # Test 2 — verifica TMDB key
+    tmdb_key = os.environ.get("TMDB_API_KEY", "")
+    results["tmdb_key_set"] = bool(tmdb_key)
+    results["tmdb_key_length"] = len(tmdb_key)
+    
+    # Test 3 — fetch movies
+    try:
+        from django.core.management import call_command
+        from io import StringIO
+        out = StringIO()
+        call_command("fetch_movies", "--pages", "2", stdout=out, stderr=out)
+        results["fetch_movies"] = "ok"
+        results["fetch_movies_output"] = out.getvalue()[:500]
+    except Exception as e:
+        results["fetch_movies"] = "error"
+        results["fetch_movies_error"] = str(e)
+        results["fetch_movies_trace"] = traceback.format_exc()
+
+    # Test 4 — fetch series
+    try:
+        out2 = StringIO()
+        call_command("fetch_series", "--pages", "2", stdout=out2, stderr=out2)
+        results["fetch_series"] = "ok"
+        results["fetch_series_output"] = out2.getvalue()[:500]
+    except Exception as e:
+        results["fetch_series"] = "error"
+        results["fetch_series_error"] = str(e)
+        results["fetch_series_trace"] = traceback.format_exc()
+
+    # Test 5 — movies after
+    try:
+        results["movies_after"] = Movie.objects.count()
+        results["series_after"] = Series.objects.count()
+    except Exception as e:
+        results["count_after_error"] = str(e)
+
+    return JsonResponse(results)
 
 
 class GenreListView(generics.ListAPIView):
