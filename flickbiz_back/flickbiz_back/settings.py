@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -127,11 +128,27 @@ REST_FRAMEWORK = {
 
 # CORS: allow frontend origin
 CORS_ALLOWED_ORIGINS = [
-    o for o in [
-        os.environ.get("FRONTEND_URL", "http://localhost:5173"),
-        "http://localhost:5173",
-    ] if o
+    "https://flickbiz-front.onrender.com",
 ]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY", "")
