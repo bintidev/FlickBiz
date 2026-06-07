@@ -166,9 +166,12 @@ export default function LoginModal({ onClose, onSwitchToRegister }) {
             {/* Logo + header */}
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }}>
               <div className="flex items-center gap-3 mb-5">
-                <motion.div whileHover={{ rotate: 15, scale: 1.1 }}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm"
-                  style={{ background: "linear-gradient(135deg,#ff3f6c,#ff8c42)", fontFamily: "var(--font-display)" }}>F</motion.div>
+                <motion.div 
+                  whileHover={{ rotate: 15, scale: 1.1 }}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm overflow-hidden"
+                >
+                  <img src="/flickbiz-logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+                </motion.div>
                 <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "#8888aa", fontFamily: "var(--font-display)" }}>FlickBiz</span>
               </div>
               <GlitchText text="Welcome back" />

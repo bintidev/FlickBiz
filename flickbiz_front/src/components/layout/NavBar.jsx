@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiChevronDown, FiFilm, FiStar, FiShuffle } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
+import LoginModal from "../auth/LoginModal";
+import RegisterModal from "../auth/RegisterModal";
 
 const NAV = [
   { label: "Media", icon: FiFilm, children: [{ label: "Movies", to: "/movies" }, { label: "Series", to: "/series" }] },
@@ -16,6 +18,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
   const [narrow, setNarrow] = useState(false);
+  const [modal, setModal] = useState(null); // Estado para controlar el modal activo
 
   useEffect(() => {
     const check = () => setNarrow(window.innerWidth < 900);
@@ -72,13 +75,39 @@ export default function Navbar() {
             </>
           ) : (
             <div className="flex items-center gap-2 sm:gap-3">
-              <Link to="/login" className="px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm border border-white/10 text-[#f0f0f5] transition-colors hover:bg-white/5">Sign in</Link>
-              <Link to="/register" className="px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm bg-gradient-to-r from-[#ff3f6c] to-[#ff8c42] text-white font-medium hover:opacity-90 transition-opacity">Get started</Link>
+              <button 
+                onClick={() => setModal("login")}
+                className="px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm border border-white/10 text-[#f0f0f5] transition-colors hover:bg-white/5"
+              >
+                Sign in
+              </button>
+              <button 
+                onClick={() => setModal("register")}
+                className="px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm bg-gradient-to-r from-[#ff3f6c] to-[#ff8c42] text-white font-medium hover:opacity-90 transition-opacity"
+              >
+                {narrow ? "Join" : "Get started"}
+              </button>
             </div>
           )}
         </div>
       </motion.nav>
+
+      {/* Overlay para cerrar menús desplegables */}
       {open && <div className="fixed inset-0 z-30" onClick={() => setOpen(null)} />}
+
+      {/* Renderizado condicional de Modales */}
+      {modal === "login" && (
+        <LoginModal 
+          onClose={() => setModal(null)} 
+          onSwitchToRegister={() => setModal("register")} 
+        />
+      )}
+      {modal === "register" && (
+        <RegisterModal 
+          onClose={() => setModal(null)} 
+          onSwitchToLogin={() => setModal("login")} 
+        />
+      )}
     </>
   );
 }
