@@ -50,7 +50,7 @@ export default function Navbar() {
           {user ? (
             <>
               {!narrow && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center justify-center flex-1 gap-8">
                   {NAV.map((link) => (
                     <div key={link.label} className="relative">
                       {link.children ? (
@@ -69,9 +69,26 @@ export default function Navbar() {
                   ))}
                 </div>
               )}
-              <button onClick={() => toggle("profile")} className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#ff3f6c] to-[#ff8c42] text-xs font-bold text-white">
-                {user?.username?.[0]?.toUpperCase()}
-              </button>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-white">
+                  {user?.username || "Guest"}
+                </span>
+
+                {/* Lógica de Perfil: Imagen o Inicial */}
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 flex items-center justify-center bg-gray-800">
+                  {user?.profile_picture ? (
+                    <img 
+                      src={user.profile_picture} 
+                      alt={user.username} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-pink-500 to-orange-400 text-xs font-bold text-white">
+                      {user?.username?.[0]?.toUpperCase() || "U"}
+                    </div>
+                  )}
+                </div>
+              </div>
             </>
           ) : (
             <div className="flex items-center gap-2 sm:gap-3">
