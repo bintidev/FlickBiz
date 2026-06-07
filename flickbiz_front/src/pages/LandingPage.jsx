@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePres
 import { FiFilm, FiHeart, FiStar, FiGlobe, FiBell, FiShuffle } from "react-icons/fi";
 import LoginModal from "../components/auth/LoginModal";
 import RegisterModal from "../components/auth/RegisterModal";
+import Navbar from "../components/layout/NavBar";
 
 const POSTERS = [
   { src: "https://image.tmdb.org/t/p/w300/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg", x: "4%", y: "8%", rot: -9, delay: 0 },
@@ -19,9 +20,8 @@ const features = [
   { icon: FiFilm,    title: "Your vault",   desc: "Track every movie and series — watched, watching, or on your list.", color: "#ff3f6c", num: "01", tag: "TRACKING",      angle: -2  },
   { icon: FiStar,    title: "Reviews",      desc: "Write and discover reviews. Like the ones you love.",               color: "#ff8c42", num: "02", tag: "COMMUNITY",     angle: 1.5 },
   { icon: FiGlobe,   title: "Near you",     desc: "See what's streaming in your country across all platforms.",        color: "#a78bfa", num: "03", tag: "DISCOVERY",     angle: -1  },
-  { icon: FiHeart,   title: "Favourites",   desc: "Build your personal collection of all-time favourites.",            color: "#34d399", num: "04", tag: "COLLECTION",     angle: 2   },
-  { icon: FiBell,    title: "Alerts",       desc: "Get notified when a watchlist title lands in your country.",        color: "#60a5fa", num: "05", tag: "NOTIFICATIONS", angle: -1.5},
-  { icon: FiShuffle, title: "Surprise me",  desc: "Let FlickBiz pick something based on your taste.",                  color: "#f472b6", num: "06", tag: "RANDOM",        angle: 1   },
+  { icon: FiHeart,   title: "Favourites",   desc: "Build your personal collection of all-time favourites.",        color: "#60a5fa", num: "04", tag: "NOTIFICATIONS", angle: -1.5},
+  { icon: FiShuffle, title: "Surprise me",  desc: "Let FlickBiz pick something based on your taste.",                  color: "#f472b6", num: "05", tag: "RANDOM",        angle: 1   },
 ];
 
 const FeatureIcon = ({ feature, size = 20, color }) => {
@@ -209,7 +209,7 @@ function FeatureDeck() {
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
         className="text-[11px] font-mono tracking-[0.4em] uppercase mb-12 text-center"
         style={{ color: "#777799" }}>
-        // Drag Matrix or use controls
+        Swipe the cards or use controls
       </motion.p>
 
       <div className="relative flex items-stretch gap-6 w-full" style={{ minHeight: 400 }}>
@@ -284,23 +284,34 @@ function FeatureDeck() {
                 style={{ fontSize: 240, color: f.color, fontFamily: "var(--font-display)" }}>{f.num}</div>
 
               {/* Fila superior: Icono, Título y Tag */}
-              <div className="flex items-start justify-between relative z-10 gap-6">
-                <div className="flex items-center gap-5">
-                  <motion.div className="w-16 h-16 rounded-2xl flex items-center justify-center border shadow-xl"
-                    whileHover={{ rotate: [0, -10, 10, 0] }}
-                    style={{ background: `${f.color}15`, borderColor: `${f.color}40`, boxShadow: `0 0 30px ${f.color}10` }}>
-                    <FeatureIcon feature={f} size={30} />
-                  </motion.div>
-                  <div>
-                    <span className="text-[11px] font-mono font-bold tracking-[0.4em] block mb-2 uppercase"
-                      style={{ color: f.color, opacity: 0.9 }}>// {f.tag}</span>
-                    <h3 className="text-4xl font-extrabold uppercase tracking-tighter text-white" style={{ fontFamily: "var(--font-display)" }}>{f.title}</h3>
-                  </div>
-                </div>
-                <div className="font-mono text-[10px] tracking-widest px-4 py-1.5 rounded-full border border-white/5 bg-white/5 text-zinc-500 whitespace-nowrap">
-                  <span className="text-white font-bold">{f.num}</span> / 06
+             <div className="flex flex-col relative z-10 w-full gap-4">
+              {/* Fila superior: Icono y Contador */}
+              <div className="flex items-center justify-between w-full">
+                <motion.div 
+                  className="w-12 h-12 rounded-xl flex items-center justify-center border shadow-xl flex-shrink-0"
+                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                  style={{ background: `${f.color}15`, borderColor: `${f.color}40`, boxShadow: `0 0 20px ${f.color}10` }}
+                >
+                  <FeatureIcon feature={f} size={22} />
+                </motion.div>
+
+                {/* Contador con margen extra para separación visual */}
+                <div className="font-mono text-[10px] tracking-widest px-3 py-1 rounded-full border border-white/5 bg-white/5 text-zinc-500 whitespace-nowrap">
+                  <span className="text-white font-bold">{f.num}</span> / 05
                 </div>
               </div>
+
+              {/* Fila inferior: Tag y Título */}
+              <div className="min-w-0 w-full">
+                <span className="text-[10px] font-mono font-bold tracking-[0.2em] block mb-1 uppercase"
+                  style={{ color: f.color, opacity: 0.9 }}>// {f.tag}</span>
+                
+                <h3 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tighter text-white leading-tight break-words" 
+                    style={{ fontFamily: "var(--font-display)" }}>
+                  {f.title}
+                </h3>
+              </div>
+            </div>
 
               {/* Descripción con tipografía refinada */}
               <div className="relative z-10 max-w-2xl my-8">
@@ -398,9 +409,7 @@ export default function LandingPage() {
   const postersY = useTransform(scrollYProgress, [0, 1], [0, -120]);
 
   return (
-    <div className="antialiased selection:bg-[#ff3f6c]/30 select-none" style={{ background: "#05050a", minHeight: "100vh", overflowX: "hidden" }}>
-      
-      {/* Estilos globales inyectados para la estética brutalista-tech */}
+    <div className="antialiased selection:bg-[#ff3f6c]/30 min-h-screen w-full overflow-x-hidden">
       <style>{`
         .text-gradient {
           background: linear-gradient(135deg, #ff3f6c 0%, #ff8c42 100%);
@@ -411,34 +420,21 @@ export default function LandingPage() {
           -webkit-text-stroke: 1px rgba(255,255,255,0.1);
           color: transparent;
         }
-        ::selection {
-          background-color: rgba(255, 63, 108, 0.2);
-          color: #fff;
+        /* Correcciones de desbordamiento */
+        .break-words {
+          overflow-wrap: break-word;
+          word-wrap: break-word;
+          word-break: break-word;
         }
-      `}</style>
+        @media (max-width: 480px) {
+          .mobile-text-sm { font-size: 2.2rem !important; }
+        `}
+        </style>
       
       <CustomCursor />
 
       {/* Nav - Mantenido estética original */}
-      <motion.nav initial={{ opacity: 0, y: -24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-8 py-5"
-        style={{ background: "rgba(5,5,10,0.8)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="flex items-center gap-2">
-          <motion.div whileHover={{ rotate: 15, scale: 1.15 }} transition={{ type: "spring", stiffness: 400 }}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-            style={{ background: "linear-gradient(135deg,#ff3f6c,#ff8c42)", fontFamily: "var(--font-display)" }}>F</motion.div>
-          <span className="font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>FlickBiz</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setModal("login")}
-            className="px-5 py-2 rounded-lg text-sm font-medium"
-            style={{ border: "1px solid rgba(255,255,255,0.1)", color: "#f0f0f5", fontFamily: "var(--font-display)" }}>Sign in</motion.button>
-          <motion.button whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(255,63,108,0.4)" }} whileTap={{ scale: 0.95 }}
-            onClick={() => setModal("register")}
-            className="px-5 py-2 rounded-lg text-sm font-medium"
-            style={{ background: "linear-gradient(135deg,#ff3f6c,#ff8c42)", color: "white", fontFamily: "var(--font-display)" }}>Get started</motion.button>
-        </div>
-      </motion.nav>
+      <Navbar />
 
       {/* ── HERO ── Mantenido fondo CinemaCanvas */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -473,7 +469,7 @@ export default function LandingPage() {
             style={{ background:"rgba(255,63,108,0.07)", border:"1px solid rgba(255,63,108,0.25)", color:"#ff8c42" }}>
             <motion.span animate={{ scale:[1,1.5,1], opacity:[1,0.5,1] }} transition={{ duration:1.5, repeat:Infinity, ease: "easeInOut" }}
               className="w-2 h-2 rounded-full shadow-[0_0_8px_#ff3f6c]" style={{ background:"#ff3f6c" }} />
-            <span className="font-mono tracking-widest text-[#f0f0f5]">Your personal movie & series vault</span>
+            <span className="font-mono tracking-widest text-[#f0f0f5]">Your personal cinematic collection</span>
           </motion.div>
 
           {/* Títulos con efecto de degradado y contorno (Stroke) */}
@@ -482,8 +478,10 @@ export default function LandingPage() {
               initial={{ opacity:0, x: i%2===0 ? -80 : 80, filter:"blur(10px)" }}
               animate={{ opacity:1, x:0, filter:"blur(0px)" }}
               transition={{ delay:0.35+i*0.18, duration:0.9, ease:[0.22,1,0.36,1] }}>
-              <span className={`block font-black leading-[0.88] mb-1 uppercase tracking-tighter ${i===1 ? "text-gradient" : i===0 ? "text-stroke-tech" : "text-white"}`}
-                style={{ fontFamily:"var(--font-display)", fontSize:"clamp(3.5rem,10vw,7.5rem)" }}>{line}</span>
+              <span className={`block font-black leading-[0.8] mb-2 uppercase tracking-tighter ...`}
+                style={{ fontFamily:"var(--font-display)", fontSize:"clamp(3rem, 8vw, 7.5rem)" }}>
+                {line}
+              </span>
             </motion.div>
           ))}
 
@@ -532,7 +530,12 @@ export default function LandingPage() {
 
         <motion.div initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin: "-100px" }}
           className="text-center mb-6 px-8 relative z-10">
-          <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tighter text-white mb-4" style={{ fontFamily:"var(--font-display)" }}>Everything you need</h2>
+          <h2 
+            className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tighter text-white mb-4 px-4 leading-[1.1]" 
+            style={{ fontFamily: "var(--font-display)", wordBreak: "break-word" }}
+          >
+            Everything you need
+          </h2>
           <p className="max-w-lg mx-auto font-light text-zinc-400 text-lg">Interactive neural interface to manage and explore your absolute cinematic universe.</p>
         </motion.div>
 
@@ -550,7 +553,7 @@ export default function LandingPage() {
         </div>
 
         {/* Deck de características - Ancho completo */}
-        <div className="max-w-[1700px] mx-auto w-full relative z-10">
+        <div className="w-full h-full rounded-3xl p-6 md:p-12 flex flex-col relative z-10">
           <FeatureDeck />
         </div>
       </section>
@@ -559,10 +562,10 @@ export default function LandingPage() {
       <section className="max-w-[1500px] mx-auto px-8 py-24 border-t" style={{ borderColor:"rgba(255,255,255,0.04)" }}>
         <motion.p initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }}
           className="text-center text-[10px] font-mono font-black tracking-[0.5em] uppercase mb-16"
-          style={{ color:"#666688" }}>// BRANDING_VARIANTS_MATRIX v1.0</motion.p>
+          style={{ color:"#666688" }}>OUR ESSENCE</motion.p>
         <div className="flex items-center justify-center gap-x-12 gap-y-10 flex-wrap">
           {[
-            { label:"Lettermark_v1", el:<div className="w-18 h-18 rounded-3xl flex items-center justify-center text-white text-3xl font-black tracking-tighter border-2 shadow-xl hover:-rotate-6 hover:scale-110 transition-all" style={{ background:"linear-gradient(135deg,#ff3f6c,#ff8c42)", borderColor: "rgba(255,255,255,0.1)", fontFamily:"var(--font-display)" }}>FB</div> },
+            { label:"Lettermark_v1", el:<div className="w-18 h-18 rounded-3xl flex items-center justify-center text-white text-3xl font-black tracking-tighter border-2 shadow-xl hover:-rotate-6 hover:scale-110 transition-all" style={{ background:"linear-gradient(135deg,#ff3f6c,#ff8c42)", borderColor: "rgba(255,255,255,0.1)", fontFamily:"var(--font-display)" }}>F</div> },
             { label:"Icon_mark_v2",  el:<div className="w-18 h-18 rounded-3xl flex items-center justify-center bg-[#0d0d14] border-2 border-[#ff3f6c] shadow-[0_0_20px_rgba(255,63,108,0.2)] hover:rotate-6 hover:scale-110 transition-all hover:bg-[#ff3f6c]/5"><FiFilm size={32} style={{ color:"#ff3f6c" }} /></div> },
             { label:"Wordmark_v3",   el:<div className="px-6 py-4 rounded-3xl bg-[#0d0d14] border border-zinc-900/80 shadow-xl hover:-translate-y-2 hover:border-zinc-800 transition-all"><span className="text-3xl font-black uppercase tracking-tighter text-gradient" style={{ fontFamily:"var(--font-display)" }}>FLICKBIZ</span></div> },
             { label:"Combined_v4",   el:<div className="flex items-center gap-3 px-6 py-4 rounded-3xl bg-[#0d0d14] border border-zinc-900/80 shadow-xl hover:-translate-y-2 hover:border-zinc-800 transition-all"><div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black tracking-tight text-base" style={{ background:"linear-gradient(135deg,#ff3f6c,#ff8c42)", fontFamily:"var(--font-display)" }}>F</div><span className="font-bold text-xl text-white" style={{ fontFamily:"var(--font-display)" }}>FlickBiz</span></div> },
@@ -577,38 +580,55 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── CTA — brutalista y envolvente ── */}
-      <section className="max-w-[1500px] mx-auto px-8 py-24 border-t" style={{ borderColor:"rgba(255,255,255,0.04)" }}>
-        <motion.div initial={{ opacity:0, y:50 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin: "-150px" }}
-          className="rounded-[2.5rem] p-20 text-center relative overflow-hidden group shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)]"
-          style={{ background:"#08080d", border:"1px solid rgba(255,255,255,0.03)" }}>
-          
+      <section className="max-w-[1500px] mx-auto px-4 md:px-8 py-24 border-t" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }} 
+          whileInView={{ opacity: 1, y: 0 }} 
+          viewport={{ once: true, margin: "-150px" }}
+          className="rounded-[2.5rem] p-8 md:p-20 text-center relative overflow-hidden group shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)] flex flex-col items-center"
+          style={{ background: "#08080d", border: "1px solid rgba(255,255,255,0.03)" }}
+        >
           {/* Textura de fondo del CTA */}
           <div className="absolute inset-0 rounded-[2.5rem] pointer-events-none overflow-hidden opacity-10">
-            <div style={{ position: "absolute", inset: 0,
+            <div style={{ 
+              position: "absolute", 
+              inset: 0,
               backgroundImage: "linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)",
-              backgroundSize: "30px 30px" }} />
+              backgroundSize: "30px 30px" 
+            }} />
           </div>
 
-          <motion.div animate={{ x:[0,50,0], y:[0,-40,0] }} transition={{ duration:10, repeat:Infinity, ease: "easeInOut" }}
+          {/* Elementos decorativos (Glows) */}
+          <motion.div animate={{ x: [0, 50, 0], y: [0, -40, 0] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full pointer-events-none mix-blend-screen"
-            style={{ background:"#ff3f6c", opacity:0.15, filter:"blur(120px)" }} />
-          <motion.div animate={{ x:[0,-50,0], y:[0,40,0] }} transition={{ duration:12, repeat:Infinity, ease: "easeInOut" }}
+            style={{ background: "#ff3f6c", opacity: 0.15, filter: "blur(120px)" }} />
+          <motion.div animate={{ x: [0, -50, 0], y: [0, 40, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
             className="absolute -bottom-48 -right-48 w-[500px] h-[500px] rounded-full pointer-events-none mix-blend-screen"
-            style={{ background:"#ff8c42", opacity:0.1, filter:"blur(120px)" }} />
+            style={{ background: "#ff8c42", opacity: 0.1, filter: "blur(120px)" }} />
           
-          <span className="text-[11px] font-mono font-black tracking-[0.5em] uppercase text-[#ff3f6c] block mb-5 relative z-10animate-pulse">
-            // PROTOCOL: ESTABLISH_VAULT
+          {/* Contenido */}
+          <span className="text-[11px] font-mono font-black tracking-[0.5em] uppercase text-[#ff3f6c] block mb-5 relative z-10 animate-pulse">
+            READY TO BEGIN
           </span>
-          <h2 className="text-6xl md:text-7xl font-black uppercase tracking-tighter text-white mb-6 relative z-10 leading-[0.95]" style={{ fontFamily:"var(--font-display)" }}>
-            Initialize Your<br />Cinematic Legac<span className="text-stroke-tech">y</span>
+          
+          <h2 className="text-3xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter text-white mb-6 relative z-10 leading-tight md:leading-[0.95] break-words max-w-4xl" 
+              style={{ fontFamily: "var(--font-display)", wordBreak: "break-word" }}>
+            Start Your<br />Cinematic Journe<span className="text-stroke-tech">y</span>
           </h2>
-          <p className="text-xl mb-12 relative z-10 max-w-xl mx-auto font-light text-zinc-300 transition-colors group-hover:text-white" style={{ textShadow: "0 2px 15px rgba(0,0,0,0.5)" }}>Zero-gravity interface. Infinite storage. Absolutely free. Secure your node in the network today.</p>
-          <motion.button whileHover={{ scale:1.05, y: -4, boxShadow:"0 30px 80px rgba(255,63,108,0.5)" }} whileTap={{ scale:0.96 }}
+          
+          <p className="text-lg mb-12 relative z-10 max-w-xl mx-auto font-light text-zinc-300 transition-colors group-hover:text-white" 
+            style={{ textShadow: "0 2px 15px rgba(0,0,0,0.5)" }}>
+            Seamless interface. Private storage. Yours forever. Create your library today.
+          </p>
+          
+          <motion.button 
+            whileHover={{ scale: 1.05, y: -4, boxShadow: "0 30px 80px rgba(255,63,108,0.5)" }} 
+            whileTap={{ scale: 0.96 }}
             onClick={() => setModal("register")}
-            className="px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider relative z-10 transition-all duration-300 shadow-2xl"
-            style={{ background:"linear-gradient(135deg,#ff3f6c,#ff8c42)", color:"white", fontFamily:"var(--font-display)" }}>
-            Deploy Vault Access ⚡
+            className="px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-wider relative z-10 transition-all duration-300 shadow-2xl w-full sm:w-auto"
+            style={{ background: "linear-gradient(135deg,#ff3f6c,#ff8c42)", color: "white", fontFamily: "var(--font-display)" }}
+          >
+            Join for Free
           </motion.button>
         </motion.div>
       </section>
@@ -617,12 +637,12 @@ export default function LandingPage() {
       <footer className="max-w-[1500px] mx-auto px-8 py-12 mt-10 text-center border-t" style={{ borderColor:"rgba(255,255,255,0.03)" }}>
         <div className="text-gradient font-black text-2xl uppercase tracking-tighter mb-5" style={{ fontFamily: "var(--font-display)" }}>FlickBiz</div>
         <div className="font-mono text-xs mb-5 tracking-widest" style={{ color:"#555577" }}>
-          © {new Date().getFullYear()} FlickBiz_Neural_Network. CORE_SYS_v4.2. All rights reserved.
+          © {new Date().getFullYear()} FlickBiz. All rights reserved.
         </div>
         <div className="flex gap-6 justify-center font-mono text-[10px] tracking-[0.2em] uppercase" style={{ color:"#ababcc" }}>
-          <span className="hover:text-[#00ffcc] cursor-pointer transition-colors">Privacy_Protocol</span>
-          <span className="hover:text-[#ff3f6c] cursor-pointer transition-colors">Terms_v1.2</span>
-          <span className="hover:text-[#ff8c42] cursor-pointer transition-colors">Support_API</span>
+          <span className="hover:text-[#00ffcc] cursor-pointer transition-colors">Privacy</span>
+          <span className="hover:text-[#ff3f6c] cursor-pointer transition-colors">Terms</span>
+          <span className="hover:text-[#ff8c42] cursor-pointer transition-colors">Support</span>
         </div>
       </footer>
 
