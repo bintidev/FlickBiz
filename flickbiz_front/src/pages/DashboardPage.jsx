@@ -11,7 +11,7 @@ import {
   FiStar, FiShuffle, FiRefreshCw, FiMoreVertical, FiCheck, FiMessageSquare
 } from "react-icons/fi";
 import toast from "react-hot-toast";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/layout/NavBar";
 
 // ── Canvas de Fondo ──
 function DashCanvas() {
