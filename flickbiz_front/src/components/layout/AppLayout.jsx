@@ -50,7 +50,7 @@ function CustomCursor() {
 export default function AppLayout() {
   const location = useLocation();
   return (
-    <div style={{ background: "#05050a", minHeight: "100vh", cursor: "none" }}>
+    <div className="min-h-screen bg-[#070205] text-white" style={{ background: "#05050a", minHeight: "100vh", cursor: "none" }}>
       <CustomCursor />
       <Navbar />
       <AnimatePresence mode="wait">
