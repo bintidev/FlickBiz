@@ -11,7 +11,6 @@ import {
   FiStar, FiShuffle, FiRefreshCw, FiMoreVertical, FiCheck, FiMessageSquare
 } from "react-icons/fi";
 import toast from "react-hot-toast";
-import Navbar from "../components/layout/NavBar";
 
 // ── Canvas de Fondo ──
 function DashCanvas() {
@@ -404,7 +403,6 @@ export default function DashboardPage(){
   return(
     <div style={{minHeight:"100vh",cursor:"none"}}>
       <DashCanvas/>
-      <Navbar />
 
       {/* Ticker de Estadísticas */}
       <div className="fixed top-[72px] left-0 right-0 z-30 overflow-hidden border-b py-2"

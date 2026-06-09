@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiChevronDown, FiFilm, FiStar, FiShuffle } from "react-icons/fi";
+import { FiChevronDown, FiFilm, FiStar, FiShuffle, FiLogOut, FiUser } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 import LoginModal from "../auth/LoginModal";
 import RegisterModal from "../auth/RegisterModal";
@@ -15,116 +15,105 @@ const NAV = [
 export default function Navbar() {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(null);
-  const [narrow, setNarrow] = useState(false);
-  const [modal, setModal] = useState(null); // Estado para controlar el modal activo
-
-  useEffect(() => {
-    const check = () => setNarrow(window.innerWidth < 900);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
+  const [open, setOpen] = useState(null); 
+  const [modal, setModal] = useState(null);
+  const navRef = useRef(null);
 
   useEffect(() => { setOpen(null); }, [location]);
-
-  const toggle = (key) => setOpen((p) => (p === key ? null : key));
 
   return (
     <>
       <motion.nav
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4"
+        ref={navRef}
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3"
         style={{ background: "rgba(5,5,10,0.88)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
       >
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/flickbiz-logo.png" alt="Logo" className="w-8 h-8 object-contain" />
-          <span className="hidden sm:block font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
-            FlickBiz
-          </span>
+        <Link to="/" className="flex items-center gap-2 z-50">
+          <img src="/flickbiz-logo.png" alt="Logo" className="w-8 h-8" />
+          <span className="font-bold text-lg hidden sm:block">FlickBiz</span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          {user ? (
-            <>
-              {!narrow && (
-                <div className="flex items-center justify-center flex-1 gap-8">
-                  {NAV.map((link) => (
-                    <div key={link.label} className="relative">
-                      {link.children ? (
-                        <button 
-                          onClick={() => toggle(link.label)}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-[#c0c0d0] hover:text-[#ff3f6c]"
-                        >
-                          <link.icon size={15} /> {link.label} <FiChevronDown size={13} />
-                        </button>
-                      ) : (
-                        <Link to={link.to} className="px-4 py-2 text-sm text-[#c0c0d0] hover:text-[#ff3f6c]">
-                          <link.icon size={15} /> {link.label}
-                        </Link>
-                      )}
-                    </div>
-                  ))}
-                </div>
+        {/* Links Escritorio */}
+        <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+          {NAV.map((link) => (
+            <div key={link.label} className="relative">
+              {link.children ? (
+                <button onClick={() => setOpen(open === link.label ? null : link.label)} 
+                  className={`flex items-center gap-1.5 text-sm transition-colors ${open === link.label ? "text-[#ff3f6c]" : "text-[#c0c0d0] hover:text-[#ff3f6c]"}`}>
+                  <link.icon size={15} /> {link.label} <FiChevronDown size={13} className={`transition-transform duration-300 ${open === link.label ? "rotate-180" : ""}`} />
+                </button>
+              ) : (
+                <Link to={link.to} className="flex items-center gap-1.5 text-sm text-[#c0c0d0] hover:text-[#ff3f6c]">
+                  <link.icon size={15} /> {link.label}
+                </Link>
               )}
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-white">
-                  {user?.username || "Guest"}
-                </span>
 
-                {/* Lógica de Perfil: Imagen o Inicial */}
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 flex items-center justify-center bg-gray-800">
-                  {user?.profile_picture ? (
-                    <img 
-                      src={user.profile_picture} 
-                      alt={user.username} 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-pink-500 to-orange-400 text-xs font-bold text-white">
-                      {user?.username?.[0]?.toUpperCase() || "U"}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button 
-                onClick={() => setModal("login")}
-                className="px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm border border-white/10 text-[#f0f0f5] transition-colors hover:bg-white/5"
-              >
-                Sign in
-              </button>
-              <button 
-                onClick={() => setModal("register")}
-                className="px-3 sm:px-5 py-2 rounded-lg text-xs sm:text-sm bg-gradient-to-r from-[#ff3f6c] to-[#ff8c42] text-white font-medium hover:opacity-90 transition-opacity"
-              >
-                {narrow ? "Join" : "Get started"}
-              </button>
+              {/* Dropdown escritorio */}
+              {link.children && open === link.label && (
+                <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="absolute top-full left-0 mt-3 w-40 bg-[#0a0a10]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl z-[60]">
+                  {link.children.map(c => (
+                    <Link key={c.to} to={c.to} className="block px-4 py-2 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out">
+                      {c.label}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
             </div>
+          ))}
+        </div>
+
+        {/* Botón Usuario */}
+        <div className="z-50">
+          {user ? (
+            <div className="relative">
+              <button onClick={() => setOpen(open === "user" ? null : "user")} 
+                className="flex items-center gap-2 border border-white/10 rounded-full px-3 py-1 bg-white/5 hover:bg-white/10 transition-all">
+                <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center bg-gray-800">
+                  {user.profile_picture ? <img src={user.profile_picture} className="w-full h-full object-cover" /> : <span className="text-[10px] font-bold">{user.username[0].toUpperCase()}</span>}
+                </div>
+                <FiChevronDown size={12} className={`text-gray-400 transition-transform duration-300 ${open === "user" ? "rotate-180" : ""}`} />
+              </button>
+              
+              <AnimatePresence>
+                {open === "user" && (
+                  <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
+                    className="absolute right-0 mt-3 w-56 bg-[#0a0a10]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl z-[60]">
+                    
+                    {/* Menú móvil integrado */}
+                    <div className="md:hidden border-b border-white/10 mb-2 pb-2">
+                      {NAV.map(l => (
+                        <div key={l.label} className="py-1">
+                          <Link to={l.to || "#"} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:text-[#ff3f6c] hover:translate-x-1 transition-all">
+                            <l.icon size={15}/> {l.label}
+                          </Link>
+                          {l.children?.map(c => (
+                            <Link key={c.to} to={c.to} className="block pl-10 py-1 text-xs text-gray-500 hover:text-[#ff3f6c] hover:translate-x-1 transition-all">
+                              {c.label}
+                            </Link>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Opciones de perfil */}
+                    <Link to="/profile" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out">
+                      <FiUser size={15}/> Profile
+                    </Link>
+                    <button onClick={logout} className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-400 hover:text-red-500 hover:bg-red-500/10 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out">
+                      <FiLogOut size={15}/> Logout
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <button onClick={() => setModal("login")} className="px-5 py-2 text-sm bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-colors">Sign in</button>
           )}
         </div>
       </motion.nav>
 
-      {/* Overlay para cerrar menús desplegables */}
-      {open && <div className="fixed inset-0 z-30" onClick={() => setOpen(null)} />}
-
-      {/* Renderizado condicional de Modales */}
-      {modal === "login" && (
-        <LoginModal 
-          onClose={() => setModal(null)} 
-          onSwitchToRegister={() => setModal("register")} 
-        />
-      )}
-      {modal === "register" && (
-        <RegisterModal 
-          onClose={() => setModal(null)} 
-          onSwitchToLogin={() => setModal("login")} 
-        />
-      )}
+      {modal === "login" && <LoginModal onClose={() => setModal(null)} onSwitchToRegister={() => setModal("register")} />}
+      {modal === "register" && <RegisterModal onClose={() => setModal(null)} onSwitchToLogin={() => setModal("login")} />}
     </>
   );
 }
