@@ -69,29 +69,86 @@ export default function Navbar() {
             <div className="relative">
               <button onClick={() => setOpen(open === "user" ? null : "user")} 
                 className="flex items-center gap-2 border border-white/10 rounded-full px-3 py-1 bg-white/5 hover:bg-white/10 transition-all">
-                <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center bg-gray-800">
-                  {user.profile_picture ? <img src={user.profile_picture} className="w-full h-full object-cover" /> : <span className="text-[10px] font-bold">{user.username[0].toUpperCase()}</span>}
+                
+                <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 relative">
+                  {user.profile_picture ? (
+                    <img 
+                      key={user.profile_picture}
+                      src={user.profile_picture} 
+                      alt={user.username}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <span 
+                    className="text-[10px] font-bold uppercase absolute inset-0 flex items-center justify-center"
+                    style={{ display: user.profile_picture ? 'none' : 'flex' }}
+                  >
+                    {user.username ? user.username[0] : "U"}
+                  </span>
                 </div>
+                
                 <span className="text-xs font-medium hidden sm:block">{user.username}</span>
                 <FiChevronDown size={12} className={`text-gray-400 transition-transform duration-300 ${open === "user" ? "rotate-180" : ""}`} />
               </button>
               
               <AnimatePresence>
                 {open === "user" && (
-                  <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }}
-                    className="absolute right-0 mt-3 w-56 bg-[#0a0a10]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl z-[60]">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 5 }} 
+                    animate={{ opacity: 1, y: 0 }} 
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute right-0 mt-3 w-56 bg-[#0a0a10]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl z-[60]"
+                  >
                     
-                    {/* Menú móvil integrado (solo visible si hay usuario) */}
-                    <div className="md:hidden border-b border-white/10 mb-2 pb-2">
-                       {/* ... tu lógica de menú móvil ... */}
+                    {/* 📱 MENÚ MÓVIL INTEGRADO (Solo visible en pantallas < md) */}
+                    <div className="md:hidden border-b border-white/10 mb-2 pb-2 flex flex-col gap-0.5">
+                      <div className="px-4 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                        Navigation
+                      </div>
+                      {NAV.map((link) => (
+                        <div key={link.label} className="w-full">
+                          {link.children ? (
+                            <>
+                              {/* Subsecciones de Media (Movies / Series) aplanadas para que sea más cómodo en móvil */}
+                              {link.children.map((child) => (
+                                <Link
+                                  key={child.to}
+                                  to={child.to}
+                                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out"
+                                >
+                                  <link.icon size={15} className="opacity-70" />
+                                  <span>{child.label}</span>
+                                </Link>
+                              ))}
+                            </>
+                          ) : (
+                            <Link
+                              to={link.to}
+                              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out"
+                            >
+                              <link.icon size={15} />
+                              <span>{link.label}</span>
+                            </Link>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                    
-                    <Link to="/profile" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out">
-                      <FiUser size={15}/> Profile
-                    </Link>
-                    <button onClick={logout} className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-400 hover:text-red-500 hover:bg-red-500/10 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out">
-                      <FiLogOut size={15}/> Logout
-                    </button>
+                    <div className="flex flex-col gap-0.5">
+                      <div className="px-4 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider md:hidden">
+                        Account
+                      </div>
+                      <Link to="/profile" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out">
+                        <FiUser size={15}/> Profile
+                      </Link>
+                      <button onClick={logout} className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-400 hover:text-red-500 hover:bg-red-500/10 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out">
+                        <FiLogOut size={15}/> Logout
+                      </button>
+                    </div>
+
                   </motion.div>
                 )}
               </AnimatePresence>
