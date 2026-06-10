@@ -62,7 +62,7 @@ function MediaCard({item,type="movie",isFavorite=false,currentStatus=null,onUpda
   const glowX=useTransform(sry,[-12,12],["0%","100%"]);
   const glowY=useTransform(srx,[12,-12],["0%","100%"]);
   const title = item.title || item.name || "Sin título";
-const poster = item.poster || item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : item.poster;
+  const poster = item.poster || item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : item.poster;
 
   const onMove=(e)=>{
     const r=cardRef.current?.getBoundingClientRect();
@@ -326,7 +326,6 @@ function SecHeader({icon:Icon,title,accent,subtitle,extra,color,inView}){
 export default function DashboardPage(){
   const { user } = useAuth();
 
-  // 1. Estados declarados estrictamente en el top-level
   const [trending, setTrending] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [statuses, setStatuses] = useState([]);
@@ -342,8 +341,6 @@ export default function DashboardPage(){
     setSpinning(true);
     try {
       const r = await getDiscover();
-      // Aquí es donde suele estar el error. 
-      // Si la API devuelve un objeto con resultados, tomamos el primero.
       const data = r.data.results ? r.data.results[0] : r.data;
       setDiscover(data);
     } catch (e) {
@@ -353,7 +350,6 @@ export default function DashboardPage(){
     }
   };
 
-  // 2. Efectos de datos hooks reactivos
   useEffect(() => {
     (async () => {
       try {
@@ -383,7 +379,6 @@ export default function DashboardPage(){
     })();
   }, []);
 
-  // 3. Cálculos derivados
   const watched = Array.isArray(statuses) ? statuses.filter(s => s.status === "watched").length : 0;
   const watching = Array.isArray(statuses) ? statuses.filter(s => s.status === "watching").length : 0;
   const watchlist = Array.isArray(statuses) ? statuses.filter(s => s.status === "watchlist").length : 0;
@@ -395,7 +390,6 @@ export default function DashboardPage(){
     { icon: FiHeart, label: "Favourites", value: 0, color: "#34d399" }
   ];
 
-  // Configuración fija para usar la Versión 1 (Índices 0 y 7 toman col-span-2)
   const getGridClasses = (index) => {
     return index === 0 || index === 7 ? "md:col-span-2 md:row-span-2" : "col-span-1";
   };
@@ -403,6 +397,7 @@ export default function DashboardPage(){
   return(
     <div style={{minHeight:"100vh",cursor:"none"}}>
       <DashCanvas/>
+      <Navbar />
 
       {/* Ticker de Estadísticas */}
       <div className="fixed top-[72px] left-0 right-0 z-30 overflow-hidden border-b py-2"

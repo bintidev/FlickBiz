@@ -13,6 +13,7 @@ from .serializers import (
     WeeklyTrendSerializer
 )
 from .filters import MovieFilter, SeriesFilter
+import random
 
 # Create your views here.
 class GenreListView(generics.ListAPIView):
@@ -142,11 +143,15 @@ class DiscoverView(APIView):
 
     def get(self, request):
         preferred_genres = request.user.preferred_genres.all()
-
         movie = Movie.objects.filter(genres__in=preferred_genres).order_by("?").first()
         series = Series.objects.filter(genres__in=preferred_genres).order_by("?").first()
 
-        return Response({
-            "movie": MovieListSerializer(movie).data if movie else None,
-            "series": SeriesListSerializer(series).data if series else None,
-        })
+        # Elegimos aleatoriamente entre los dos resultados encontrados
+        items = []
+        if movie: items.append({**MovieListSerializer(movie).data, "media_type": "movie"})
+        if series: items.append({**SeriesListSerializer(series).data, "media_type": "series"})
+
+        if not items:
+            return Response({"error": "No hay recomendaciones"}, status=404)
+
+        return Response(random.choice(items))
