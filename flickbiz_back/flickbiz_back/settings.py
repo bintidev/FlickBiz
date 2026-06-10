@@ -33,7 +33,16 @@ INSTALLED_APPS = [
     "apps.reviews.apps.ReviewsConfig",
     "apps.notifications.apps.NotificationsConfig",
     "rest_framework_simplejwt.token_blacklist",
+    'cloudinary_storage',
+    'django.contrib.staticfiles',
+    'cloudinary',
 ]
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'de5qqrvtv',
+    'API_KEY': '487273383511525',
+    'API_SECRET': 'BrRQoWmuaaS4tUnDEMSIP9AUObw',
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -97,8 +106,10 @@ STATIC_URL  = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "mediafiles"
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+#MEDIA_URL = "/media/"
+#MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
