@@ -2,8 +2,11 @@ name: Weekly fetch
 
 on:
   schedule:
-    - cron: "0 3 * * 1" # cada lunes a las 3am UTC
-  workflow_dispatch: # permite ejecutarlo manualmente desde GitHub
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   fetch:
@@ -21,7 +24,7 @@ jobs:
           cd flickbiz-back
           pip install -r requirements.txt
 
-      - name: Run fetch and trends
+      - name: Check environment
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
@@ -29,6 +32,39 @@ jobs:
           DEBUG: "False"
         run: |
           cd flickbiz-back
-          python manage.py fetch_movies --pages 20
-          python manage.py fetch_series --pages 20
+          echo "Python version:"
+          python --version
+          echo "DATABASE_URL set: ${{ secrets.DATABASE_URL != '' }}"
+          echo "TMDB_API_KEY set: ${{ secrets.TMDB_API_KEY != '' }}"
+          echo "SECRET_KEY set: ${{ secrets.SECRET_KEY != '' }}"
+          python manage.py check --database default
+
+      - name: Fetch movies
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: "False"
+        run: |
+          cd flickbiz-back
+          python manage.py fetch_movies --pages 3
+
+      - name: Fetch series
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: "False"
+        run: |
+          cd flickbiz-back
+          python manage.py fetch_series --pages 3
+
+      - name: Update trends
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: "False"
+        run: |
+          cd flickbiz-back
           python manage.py update_trends
