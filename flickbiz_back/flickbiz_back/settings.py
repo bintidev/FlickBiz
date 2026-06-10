@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     "apps.notifications.apps.NotificationsConfig",
     "rest_framework_simplejwt.token_blacklist",
     'cloudinary_storage',
-    'django.contrib.staticfiles',
     'cloudinary',
 ]
 
