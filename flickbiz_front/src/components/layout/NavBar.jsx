@@ -33,9 +33,9 @@ export default function Navbar() {
           <span className="font-bold text-lg hidden sm:block">FlickBiz</span>
         </Link>
 
-        {/* Links Escritorio */}
+        {/* Links Escritorio (Se ocultan si la pantalla baja de 1024px) */}
         {user && (
-          <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+          <div className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {NAV.map((link) => (
               <div key={link.label} className="relative">
                 {link.children ? (
@@ -103,28 +103,23 @@ export default function Navbar() {
                     exit={{ opacity: 0, y: 5 }}
                     className="absolute right-0 mt-3 w-56 bg-[#0a0a10]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 shadow-2xl z-[60]"
                   >
-                    
-                    {/* 📱 MENÚ MÓVIL INTEGRADO (Solo visible en pantallas < md) */}
-                    <div className="md:hidden border-b border-white/10 mb-2 pb-2 flex flex-col gap-0.5">
+                    <div className="lg:hidden border-b border-white/10 mb-2 pb-2 flex flex-col gap-0.5">
                       <div className="px-4 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                         Navigation
                       </div>
                       {NAV.map((link) => (
                         <div key={link.label} className="w-full">
                           {link.children ? (
-                            <>
-                              {/* Subsecciones de Media (Movies / Series) aplanadas para que sea más cómodo en móvil */}
-                              {link.children.map((child) => (
-                                <Link
-                                  key={child.to}
-                                  to={child.to}
-                                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out"
-                                >
-                                  <link.icon size={15} className="opacity-70" />
-                                  <span>{child.label}</span>
-                                </Link>
-                              ))}
-                            </>
+                            link.children.map((child) => (
+                              <Link
+                                key={child.to}
+                                to={child.to}
+                                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out"
+                              >
+                                <link.icon size={15} className="opacity-70" />
+                                <span>{child.label}</span>
+                              </Link>
+                            ))
                           ) : (
                             <Link
                               to={link.to}
@@ -137,8 +132,9 @@ export default function Navbar() {
                         </div>
                       ))}
                     </div>
+
                     <div className="flex flex-col gap-0.5">
-                      <div className="px-4 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider md:hidden">
+                      <div className="px-4 py-1.5 text-[10px] font-bold text-gray-500 uppercase tracking-wider lg:hidden">
                         Account
                       </div>
                       <Link to="/profile" className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-300 hover:text-[#ff3f6c] hover:bg-white/5 hover:translate-x-1 rounded-xl transition-all duration-300 ease-out">
