@@ -48,7 +48,7 @@ jobs:
           DEBUG: "False"
         run: |
           cd flickbiz_back
-          python manage.py fetch_movies --pages 3
+          python manage.py fetch_movies --pages 20
 
       - name: Fetch series
         env:
@@ -58,7 +58,7 @@ jobs:
           DEBUG: "False"
         run: |
           cd flickbiz_back
-          python manage.py fetch_series --pages 3
+          python manage.py fetch_series --pages 20
 
       - name: Update trends
         env:
