@@ -48,8 +48,15 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const sessionExpired = () => {
+    toast.error("Your session has expired. Please, sign in again.");
+    logout();
+    window.addEventListener("session-expired", sessionExpired);
+    return window.removeEventListener("session-expired", sessionExpired);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, sessionExpired }}>
       {children}
     </AuthContext.Provider>
   );

@@ -9,17 +9,17 @@ import AppLayout from "./components/layout/AppLayout";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import SeriesDetailPage from "./pages/SeriesDetailPage";
 import ReviewsPage from "./pages/ReviewsPage";
-import NotificationsPage from "./pages/NotificationsPage";
+// import NotificationsPage from "./pages/NotificationsPage";
 import ProfilePage from "./pages/ProfilePage";
 import DiscoverPage from "./pages/DiscoverPage";
 
-// Creamos una instancia de QueryClient con estrategias de sincronización activa
+// instancia de QueryClient
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: true, // Sincroniza si el usuario cambia de pestaña y vuelve
-      staleTime: 1000 * 5,        // Los datos se consideran "frescos" durante 5 segundos
-      refetchInterval: 10000,     // ¡Mágia de fondo! Polling cada 10 segundos para todos los usuarios
+      refetchOnWindowFocus: true,
+      staleTime: 1000 * 5,
+      refetchInterval: 10000,
     },
   },
 });
